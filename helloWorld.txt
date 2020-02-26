@@ -1,0 +1,106 @@
+INDEX索引简介：
+类似于图书的目录，由数据库表中单个字段或者多个字段组合而成。WHERE上使用
+优点：
+提高对表中数据的查询速度（没有索引和有索引，查询表两个速度不一样）。
+  SELECT * FROM 表 WHERE 字段=值; 
+ 	如果以这个where字段建立引，速度会变很快。
+缺点：
+创建和维护索引的时间增加了。
+索引的分类：
+1.普通索引：默认类型
+创建在任何数据类型字段上。 
+2.唯一性索引（UNIQUE）：
+创建在非重复的数据类型字段上。
+主键就是默认的UNIQUE修饰的唯一性索引。	
+3.全文索引（FULLTEXT）：
+创建在CHAR,VARCHAR,TEXT数据类型字段上。提高查询较大字符串的速度。	
+MyISAM引擎支持，MySQL引擎不支持。
+4.单列索引：创建在单个字段上。
+5.多列索引：创建在多个字段上。
+创建索引：
+1.在创建表的时候创建索引，默认名字和字段名一样
+create table 表明 (
+字段
+字段
+[索引类型] index 索引名(字段)
+)
+2.在已经存在的表上创建索引
+普通索引：CREATE INDEX 名 ON 表(字段1,字段2);
+唯一性索引：CREATE UNIQUE INDEX 名 ON 表(字段);
+3.在修改表的语句创建索引
+普通索引：ALTERT TABLE 表名 ADD INDEX 名(字段,字段2);
+唯一性索引；ALERT TABLE 表名 ADD UNIQUE INDEX 名(字);
+删除索引：
+DROP INDEX 索引名 on 表名
+
+
+二.VIEW视图
+简介：视图是一张虚拟的表，从一张或者多张表上导出来的表，数据库中只存放视图的定义，没有存放视图的数据，这些数据还在原来的表中。使用视图查询数据时，还是从原来的表中取出对应的数据。所以原来的表数据改变，视图的数据会改变。只能查询出视图所包含的字段的数据。
+优点：
+1.使操作简化
+2.增加数据的安全性（从新给列取名字,隐藏了原表的信息）
+3.提高表的逻辑独立性（原表改变，视图改变）
+创建视图
+CREATE [视图的算法，默认的话MySQL自己选择，一般默认就好] VIEW 视图名[(字段取新名字)] AS SELECT 字段 FROM 表
+视图的字段就是查询出来的字段，可以给视图的字段取新名字，默认的话，与SELECT查询出来的字段名一样。
+单表上创建视图
+CREATE VIEW 视图名(字段取新名字，默认的话，与SELECT查询出来的字段名一样) AS SELECT 字段 FROM 表
+多表上创建视图
+CREATE VIEW  视图名(字段取新名字，默认的话，与SELECT查询出来的字段名一样) AS SELECT 字段 FROM 表1，表2 WHERE 表1.字段=表2.字段
+使用视图
+SELECT 字段 FROM 视图名
+查看视图
+DESC 视图名 ：查看视图基本信息
+SHOW TABLE STATUS 视图名/表名：查看视图/表状态信息
+SHOW CREATE VIEW 视图名：查看创建视图的详细信息，有创建视图的语句
+也可以用界面管理工具在mysql的系统表中的views表中查看
+修改视图
+就是修改视图的定义
+CREATE OR REPLACE VIEW 视图名(新字段别名) AS SELECT 新字段 FROM 表
+ALTER VIEW 视图名(新字段别名) AS SELECT 新字段 FROM 表
+更新视图中的数据
+通过视图来插入，删除，更新，因为视图是一个虚表，没有数据，所以更新的是基本表中的数据，只能更新权限范围内的数据。超出了范围，就不能更新了。
+INSERT INTO 视图名 VALUE();
+UPDATE 视图名 SET 字段=值，字段=值 WHERE 条件表达式
+DELETE FROM 视图名 WHERE 条件表达式
+删除视图
+删除的是视图的定义，不会删除基本表。
+DROP VIEW IF EXISTS 视图名
+
+三.TRIGGER触发器:
+发生某个触发事件后，触发器开始执行某个操作。事件和操作包括增、删、改、查。
+创建触发器
+只有一个执行语句的触发器：
+CREATE TRIGGER 触发器名 BEFORE|AFTER 触发事件 
+ON 表名 FOR EACH ROW  
+操作 （WHERE new|old）
+BEFORE|AFTER：在触发事件之前操作还是在触发事件之后操作。
+触发事件：INSERT、DELETE、UPDATE、SELECT
+FOR EACH ROW : 表的每一行都拥有触发器
+操作：对一张表的INSERT、DELETE、UPDATE、SELECT操作
+new|old：后面跟新插入或更新的数据的字段 还是 删除的数据的字段
+      例如：teacher(id,name,teacherTypeId) 表的插入事件后在
+teacherType(id,teacherTypeName, peopleNum)表增加一个人数操作的触发器。
+CREATE TRIGGER teacher_insert_trigger AFTER INSERT 
+ON teacher FOR EACH ROW  
+UPDATE  people SET peopleNum = peopleNum+1 WHERE new teacherType = 
+people.peopleType；
+有多个执行语句的触发器：
+DELIMITER |
+CREATE TRIGGER 触发器名 BEFORE|AFTER 触发事件 ON 表名 FOR EACH ROW  
+BEGIN
+执行语句;
+执行语句;
+执行语句;
+EDS
+|
+DELIMITER;
+NOTE：
+DELIMITER |：更改分隔符符号，以后遇到分号不会立即执行，遇到更改的结束符号才会立即
+执行。
+查看触发器
+show triggers;   //查看所有的触发器
+mysql管理界面可以查看triggers表
+删除触发器
+drop trigger 触发器名； 
+
