@@ -1,4 +1,4 @@
-package com.java1234.c01connection;
+package com.ims.c01connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +9,9 @@ import java.sql.SQLException;
  */
 public class App {
     public static void main(String[] args) {
-        //1.加载数据库驱动
+        /**
+         * 1.加载数据库驱动
+         */
         String jdbcName = "com.mysql.cj.jdbc.Driver";
         try {
             Class.forName(jdbcName);
@@ -19,10 +21,11 @@ public class App {
             e.printStackTrace();
             System.out.println("加载驱动失败！");
         }
-
-        //连接数据库
+        /**
+         * 2.获取数据库的连接
+         */
         // 数据库地址
-        String dbUrl = "jdbc:mysql://47.244.180.90:3306/db_book";
+        String dbUrl = "jdbc:mysql://localhost:3306/db_bank?serverTimezone=UTC";
         // 数据库用户名
         String dbUserName = "root";
         // 数据库密码
@@ -32,13 +35,17 @@ public class App {
         try {
             // 获取数据库连接
             con = DriverManager.getConnection(dbUrl, dbUserName, dbPassword);
-            System.out.println("连接数据库成功！");
+            System.out.println("获取数据库的连接成功！");
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
+            /**
+             * 3.关闭数据库的连接
+             */
             try {
                 con.close();
+                System.out.println("关闭数据库的连接成功！");
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
