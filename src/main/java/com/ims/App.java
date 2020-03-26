@@ -1,4 +1,4 @@
-package com.java1234;
+package com.ims;
 
 /**
  * Hello world!

@@ -19,7 +19,6 @@ public class App {
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            System.out.println("加载驱动失败！");
         }
         /**
          * 2.获取数据库的连接

@@ -1,4 +1,4 @@
-package com.java1234;
+package com.ims;
 
 import static org.junit.Assert.assertTrue;
 
